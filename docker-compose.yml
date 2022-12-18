@@ -95,6 +95,15 @@ services:
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-envio-cadastro-chave-pix --replication-factor 1 --partitions 3
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-falha --replication-factor 1 --partitions 3
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-ok --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-envio-transacao-pix --replication-factor 1 --partitions 3
+      Kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-recebedor-envio-transacao-pix --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-recebedor-retorno-transacao-pix-falha --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-recebedor-retorno-transacao-pix-ok --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-fim-transacao-pix-ok --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-fim-transacao-pix-falha --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-retorno-transacao-pix-ok --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-retorno-transacao-pix-falha --replication-factor 1 --partitions 3
+      
 
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:29092 --list
