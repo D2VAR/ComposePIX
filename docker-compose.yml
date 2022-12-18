@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  mysql_itau:
+  mysql-itau:
     image: mysql
-    container_name: mysql
+    container_name: mysql-itau
     ports:
       - "3306:3306"
     expose:
@@ -14,8 +14,23 @@ services:
       - MYSQL_DATABASE=itau
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
 #    volumes:
-#      - ./mysql-data:/var/lib/mysql
-#      - ./dump:/docker-entrypoint-initdb.
+#      - ./dump:/docker-entrypoint-initdb.d
+
+  mysql-ada:
+    image: mysql
+    container_name: mysql-ada
+    ports:
+      - "3307:3306"
+    expose:
+      - "3306"
+    networks:
+      - PIX
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=ada
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+  #    volumes:
+  #      - ./dump:/docker-entrypoint-initdb.d
 
   dynamodb:
     networks:
@@ -30,7 +45,7 @@ services:
       - EDGE_PORT=4566
       - SERVICES=dynamodb
     volumes:
-      - ./src/main/resources/docker-scripts:/docker-entrypoint-initaws.d
+      - ./scripts/dynamodb:/docker-entrypoint-initaws.d
       - /var/run/docker.sock:/var/run/docker.sock
 
   zookeeper:
@@ -64,6 +79,7 @@ services:
       KAFKA_MIN_INSYNC_REPLICAS: '1'
 
   init-kafka:
+    container_name: init-kafka
     networks:
       - PIX
     image: confluentinc/cp-kafka:7.3.0
@@ -97,13 +113,23 @@ services:
       - "8080"
   itau:
     depends_on:
-      - mysql_itau
+      - mysql-itau
       - kafka
-    image: romosken/itau_pix
+    image: romosken/banco_itau_pix
     networks:
       - PIX
     container_name: itau
     ports:
-      - "8081:8081"
+      - "8081:8080"
+  ada:
+    depends_on:
+      - mysql-ada
+      - kafka
+    image: romosken/banco_ada_pix
+    networks:
+      - PIX
+    container_name: ada
+    ports:
+      - "8082:8080"
 networks:
   PIX:
