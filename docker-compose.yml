@@ -2,7 +2,7 @@ version: "3.8"
 services:
   mysql-itau:
     image: mysql
-    container_name: mysql-itau
+    container_name: mysqlitau
     ports:
       - "3306:3306"
     expose:
@@ -13,12 +13,12 @@ services:
       - MYSQL_ROOT_HOST=%
       - MYSQL_DATABASE=itau
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-#    volumes:
-#      - ./dump:/docker-entrypoint-initdb.d
+  #    volumes:
+  #      - ./dump:/docker-entrypoint-initdb.d
 
   mysql-ada:
     image: mysql
-    container_name: mysql-ada
+    container_name: mysqlada
     ports:
       - "3307:3306"
     expose:
@@ -93,9 +93,29 @@ services:
 
       echo -e 'Creating kafka topics'
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-envio-cadastro-chave-pix --replication-factor 1 --partitions 3
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-falha --replication-factor 1 --partitions 3
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-ok --replication-factor 1 --partitions 3
+      
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-falha-341 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-ok-341 --replication-factor 1 --partitions 3
+      
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-falha-201 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-retorno-cadastro-chave-pix-ok-201 --replication-factor 1 --partitions 3
+      
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-envio-transacao-pix --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-recebedor-retorno-transacao-pix-falha --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-recebedor-retorno-transacao-pix-ok --replication-factor 1 --partitions 3
+      
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-retorno-transacao-pix-falha-201 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-retorno-transacao-pix-ok-201 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-recebedor-envio-transacao-pix-201 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-fim-transacao-pix-ok-201 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-fim-transacao-pix-falha-201 --replication-factor 1 --partitions 3
 
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-retorno-transacao-pix-falha-341 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-pagador-retorno-transacao-pix-ok-341 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-recebedor-envio-transacao-pix-341 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-fim-transacao-pix-ok-341 --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topico-fim-transacao-pix-falha-341 --replication-factor 1 --partitions 3
+      
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:29092 --list
       "
@@ -114,7 +134,7 @@ services:
   itau:
     depends_on:
       - mysql-itau
-      - kafka
+      - init-kafka
     image: romosken/banco_itau_pix
     networks:
       - PIX
@@ -124,7 +144,7 @@ services:
   ada:
     depends_on:
       - mysql-ada
-      - kafka
+      - init-kafka
     image: romosken/banco_ada_pix
     networks:
       - PIX
